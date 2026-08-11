@@ -1,0 +1,4 @@
+model,params,language,random,domain,domain_lexical,wc_dlex
+Gemma-2-9B,9B,multilingual,0.94,0.88,0.52,0.30
+Llama-3.1-8B,8B,English,0.80,0.54,0.44,0.14
+Dorna2-8B,8B,Persian,0.78,0.68,0.50,0.18

@@ -1,0 +1,15 @@
+metric,value
+gemma_hits1,0.576
+llama_hits1,0.573
+dorna_hits1,0.570
+oracle_hits1,0.715
+oracle_gain,0.139
+jaccard_gemma_llama,0.579
+jaccard_gemma_dorna,0.593
+jaccard_llama_dorna,0.685
+routed_ensemble_hits1,0.618
+routed_ensemble_gain,0.042
+mcnemar_p_value,0.0001
+routing_gemma_count,282
+routing_llama_count,34
+routing_dorna_count,14

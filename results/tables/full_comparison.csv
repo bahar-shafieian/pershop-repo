@@ -1,0 +1,18 @@
+method,random,domain,domain_lexical,n
+TF-IDF,0.867,0.770,0.521,330
+BM25,0.855,0.776,0.521,330
+Tooka-SBERT,0.867,0.779,0.464,330
+Persian-Emb,0.849,0.755,0.533,330
+LaBSE,0.700,0.624,0.464,330
+BGE-m3,0.894,0.815,0.518,330
+Zero-shot Gemma (single-pass),0.861,0.761,0.491,330
+Zero-shot Gemma (PSC fair),,,0.367,50
+Zero-shot Llama (single-pass),0.809,0.727,0.485,330
+Zero-shot Dorna (single-pass),0.433,0.397,0.294,330
+Lean prompt + PSC (Gemma),0.96,0.88,0.52,50
+Chain-of-Prompting + PSC,0.96,0.86,0.50,50
+Fine-tuning SFT-only,0.94,0.84,0.48,50
+RAG-ICL (frozen k=3),0.94,0.88,0.52,50
+MERGE Gemma,0.94,0.827,0.594,330
+MERGE Llama,0.879,0.809,0.573,330
+MERGE Dorna,0.903,0.815,0.570,330
