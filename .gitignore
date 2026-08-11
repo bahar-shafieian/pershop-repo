@@ -1,0 +1,19 @@
+# Model weights and adapters -- too large, keep on Drive/Hub instead
+*.safetensors
+*.bin
+adapter_model.*
+checkpoint-*/
+
+# Data -- keep the loader, not the raw data, in git; source PerSHOP files separately
+results/per_instance/*.jsonl
+!results/per_instance/README.md
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+*.egg-info/
+
+# OS
+.DS_Store

@@ -1,0 +1,9 @@
+transformers
+peft
+bitsandbytes
+sentence-transformers
+torch
+pandas
+numpy
+statsmodels
+datasets
