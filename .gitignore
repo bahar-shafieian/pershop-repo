@@ -4,9 +4,11 @@
 adapter_model.*
 checkpoint-*/
 
-# Data -- keep the loader, not the raw data, in git; source PerSHOP files separately
-results/per_instance/*.jsonl
-!results/per_instance/README.md
+# Raw PerSHOP text data -- keep external until redistribution rights are confirmed
+data/*.jsonl
+datasets/*.jsonl
+pershop_*_train.jsonl
+pershop_*_test.jsonl
 
 # Python
 __pycache__/
