@@ -1,0 +1,91 @@
+# All LoRA / training configurations used in this thesis, in one file.
+# See docs/01_methodology.md for narrative context.
+
+quantization:
+  load_in_4bit: true
+  bnb_4bit_quant_type: "nf4"
+  bnb_4bit_use_double_quant: true
+  bnb_4bit_compute_dtype: "float16"
+
+reproducibility:
+  seed: 42
+  decoding: "greedy"          # do_sample=False throughout
+
+psc_evaluation:
+  k_shuffles: 5
+  aggregation: "borda_count"
+  invalid_generation_penalty: "uniform_max_rank"
+
+sft_only_lora:
+  # Self-distilled curriculum LoRA (Section 3.6.3) -- negative result (0.48 on domain_lexical)
+  r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  target_modules: ["q_proj", "k_proj", "v_proj", "o_proj"]
+  task_type: "CAUSAL_LM"
+  fp16: false                 # trainable params cast to float32 instead (T4 grad-scaler fix)
+  batch_size: 1
+  gradient_accumulation_steps: 8
+  learning_rate: 1.0e-4
+  max_length: 1024
+  curriculum:
+    - {strategy: "random", epochs: 1}
+    - {strategy: "domain", epochs: 1}
+    - {strategy: "domain_lexical", epochs: 2}
+  distilled_trace_counts:      # correct-only, post-filter
+    random: 106
+    domain: 93
+    domain_lexical: 87
+
+rag_icl:
+  # Frozen model + retrieval at inference only (Section 3.6.4)
+  retriever: "BAAI/bge-m3"
+  k_neighbours: 3              # chosen empirically on n=20 subset
+  result: "Hits@1 unchanged (~0.52); winner-consistency rose substantially"
+
+merge_rag_augmented_sft:
+  # RAG-augmented SFT / "the merge" (Section 3.6.5) -- the method that broke the ceiling
+  r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  target_modules: ["q_proj", "k_proj", "v_proj", "o_proj"]
+  fp16: false
+  batch_size: 1
+  gradient_accumulation_steps: 8
+  learning_rate: 1.0e-4
+  max_length: 1536             # longer than SFT-only -- retrieved context
+  k_neighbours_train_and_inference: 2   # MUST match between train and eval
+  fresh_adapter: true          # not continued from sft_only adapter
+  curriculum:
+    - {strategy: "random", epochs: 1, n: 150}
+    - {strategy: "domain", epochs: 1, n: 150}
+    - {strategy: "domain_lexical", epochs: 2, n: 250}
+  checkpointing: "save_strategy=epoch, written to Drive for crash-resumability"
+  applied_to: ["gemma-2-9b-it", "llama-3.1-8b-instruct", "dorna2-8b"]
+
+chat_vector_repair_attempt:
+  # Applied to Dorna as a training-free instruction-following repair -- FAILED at every strength
+  formula: "dorna_weights + lambda * (llama_instruct_weights - llama_base_weights)"
+  strengths_tested:
+    - {lambda: 1.0, valid_outputs: "0/5 (corrupted)"}
+    - {lambda: 0.5, valid_outputs: "3/5 (partial)"}
+    - {lambda: 0.3, valid_outputs: "3/5 (partial)"}
+  conclusion: "negative result -- not cleanly recoverable via weight arithmetic; merge repairs it via training instead"
+
+simpo_preference_optimization:
+  # DESIGNED, NEVER RUN -- future work
+  status: "not completed"
+  reason_chosen_over_dpo: "reference-free (~half cost of DPO's 2x forward passes); DPO also hit a /tmp precompute-cache bug"
+  reason_never_run: "both DPO attempts died to Colab preemption before SimPO stage was reached"
+
+confidence_routed_ensemble:
+  # This session's new result -- an ACHIEVED, tested, statistically validated result
+  routing_signal: "PSC winner_consistency per instance (no gold-label leakage)"
+  tie_break: "gemma"           # specified before seeing outcome-level results
+  models: ["gemma_merge", "llama_merge", "dorna_merge"]
+  result:
+    hits1: 0.618
+    best_single_model_hits1: 0.576
+    oracle_hits1: 0.715
+    mcnemar_p_value: 0.0001
+    discordant: {baseline_right_challenger_wrong: 0, challenger_right_baseline_wrong: 14}
