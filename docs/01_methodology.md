@@ -1,8 +1,5 @@
 # Methodology
 
-This mirrors the thesis Methodology chapter (see the delivered `Methodology_Chapter.docx`); kept here
-in plain markdown as the working reference.
-
 ## Models
 
 | Model | Params | Type | Role |
