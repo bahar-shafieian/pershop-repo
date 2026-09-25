@@ -19,9 +19,10 @@ Schema (one JSON object per line, JSONL):
   "split": "train" | "test"
 }
 
-NOTE ON PROVENANCE: these files are not hosted on Hugging Face under any known dataset name.
-Source them from wherever they were originally obtained and keep a permanent copy on Drive —
-see docs/04_engineering_lessons.md, "Dataset provenance".
+NOTE ON PROVENANCE: the benchmark is published at
+https://huggingface.co/datasets/blueharu/persian-response-ranking.
+This loader reads local JSONL files in the original experiment naming convention;
+new users can obtain the benchmark from its Hugging Face configurations.
 """
 import json
 from pathlib import Path
