@@ -1,5 +1,7 @@
 # Results — Full Reference
 
+**Reading note:** The `n` column below gives the domain-lexical sample size; sample sizes for other strategies can differ (for example, the reported Gemma merge random result uses 50 instances). The later three-model ensemble analysis is exploratory because saved outputs lack verified cross-model instance IDs and encode winner-consistency differently. See [the analysis and validation tasks](03_complementarity_analysis.md).
+
 ## Full comparison, Hits@1 (PSC-scored where applicable)
 
 | Method | random | domain | domain_lexical | n |
@@ -61,7 +63,7 @@ Gold-position balance across the 5 slots (55–79 of 330 per slot) rules out a d
 
 ## Complementarity analysis (this session — domain_lexical, n=330, all 3 merged models)
 
-### Per-model Hits@1 (this rerun; minor noise vs. original 0.594/0.573/0.570)
+### Per-model Hits@1 (later Gemma rerun; differs from the reported 0.594)
 
 | Model | Hits@1 |
 |---|---|
@@ -93,22 +95,20 @@ Gold-position balance across the 5 slots (55–79 of 330 per slot) rules out a d
 | Gemma vs Dorna | 0.593 |
 | **Llama vs Dorna** | **0.685** (highest — shared base architecture/lineage) |
 
-### Confidence-routed ensemble (ACTUALLY ACHIEVED — not the oracle)
+### Confidence-routed ensemble (exploratory; alignment and signal checks pending)
 
-Routes each instance to whichever model has the highest PSC winner-consistency (a signal available
-without the gold label). Ties broken toward Gemma.
+The script routes each row to the model with the largest saved winner-consistency value (without using the gold label). Ties favor Gemma. The files use fractional values for Gemma and booleans for Llama/Dorna, so this rule does not yet compare equivalent confidence signals. Positional row alignment also needs verification.
 
 | | Value |
 |---|---|
 | Routing distribution | Gemma 282, Llama 34, Dorna 14 (of 330) |
-| **Realized Hits@1** | **0.618** |
+| **Exploratory Hits@1 (conditional on row alignment)** | **0.618** |
 | Gain over best single (Gemma 0.576) | **+0.042** |
 | % of oracle gap (0.139) realized | ~30% |
-| McNemar p-value (routed vs. Gemma alone) | **0.0001** (significant) |
+| McNemar p-value (conditional on valid paired alignment) | **0.0001** (significant) |
 | Discordant instances | 0 losses, 14 wins (out of 330) |
 
-**This is meaningfully above the ~10% "naive majority voting captures the oracle gain" figure reported
-in the ensemble-diversity literature — worth stating as a comparison point.**
+**These ensemble statistics are descriptive outputs of the current script, not a validated improvement claim.**
 
 ## What still needs figures (not yet generated)
 
