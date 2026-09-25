@@ -1,16 +1,18 @@
 """
 Complementarity analysis across multiple models' per-instance results.
 
-This is the cleaned-up, schema-normalized version of the code actually run in
-Colab this session (see notebooks/colab_cells_reference.py for the exact,
-unmodified cell history including the schema-mismatch debugging).
+This script recalculates the saved per-instance analysis. Gemma uses string IDs
+while Llama and Dorna use positional IDs; their alignment must be verified
+against the canonical benchmark before interpreting cross-model statistics.
+Winner-consistency is a fraction for Gemma and a boolean for the other models,
+so the routing score is not yet comparable across models.
 
 Computes:
   1. Oracle upper bound (ceiling -- NOT an achieved result, see docs/03_complementarity_analysis.md)
   2. Four-cell decomposition per model pair
   3. Pairwise error-Jaccard
-  4. A real, testable confidence-routed ensemble (an ACTUALLY ACHIEVED result)
-  5. McNemar significance test for the routed ensemble vs. the best single model
+  4. Exploratory confidence routing across saved per-instance outputs
+  5. A conditional McNemar calculation; valid only after row alignment is verified
 
 Usage:
     python complementarity.py --results_dir results/per_instance/
@@ -99,9 +101,9 @@ def confidence_routed_ensemble(
 ) -> tuple[np.ndarray, pd.Series]:
     """
     Routes each instance to whichever model had the highest winner-consistency
-    (a signal available WITHOUT knowledge of the gold label -- no leakage).
-    Ties broken toward `tie_break_model`. This decision rule must be specified
-    BEFORE looking at outcome-level results (it was, in this project).
+    (a signal available without the gold label). The saved files encode this
+    signal differently across models, so routing results remain exploratory.
+    Ties are broken toward `tie_break_model`.
 
     Returns (ensemble_hit1_array, routed_model_per_instance).
     """
@@ -152,7 +154,8 @@ def main(results_dir: Path):
     hit1_matrix = pd.DataFrame({"gemma": gemma_hit1, "llama": llama_hit1, "dorna": dorna_hit1}).dropna()
     wc_matrix = pd.DataFrame({"gemma": gemma_wc, "llama": llama_wc, "dorna": dorna_wc}).dropna()
 
-    print(f"Matched instances: {len(hit1_matrix)}")
+    print("WARNING: cross-model row alignment and winner-consistency scales are unverified; ensemble results are exploratory.")
+    print(f"Rows joined by position: {len(hit1_matrix)}")
     print("Hits@1:", hit1_matrix.mean().round(3).to_dict())
 
     print("\n--- Oracle bound ---")
