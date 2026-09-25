@@ -72,9 +72,4 @@ the *same*, unshuffled order — worth stating as an assumption, not a guarantee
 
 ## Dataset provenance
 
-- The PerSHOP train/test JSONL files used throughout this project are **not on Hugging Face** under any
-  obvious dataset name (`HamedTaherkhani/pershop` does not exist) — they must be sourced from wherever
-  they were originally obtained (uploaded directly as local files) and re-uploaded fresh each session,
-  or moved to Drive once, permanently, to stop re-uploading them. **Action item: move the 6 canonical
-  JSONL files (3 strategies × train/test) to a permanent Drive folder now, so this stops being a
-  recurring problem.**
+The derivative response-ranking benchmark is now [public on Hugging Face](https://huggingface.co/datasets/blueharu/persian-response-ranking). It includes the `random`, `same_domain`, and `domain_lexical` configurations, each with 1,483 training, 303 validation, and 330 test instances. The dataset card records permission to redistribute the underlying dialogue text and the required citations. Use the published dataset for new runs instead of relying on session-local uploads. Note that the Hugging Face configuration is `same_domain`; records may use `domain` as their `negative_strategy` value.
