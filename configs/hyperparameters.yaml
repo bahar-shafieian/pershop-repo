@@ -79,9 +79,9 @@ simpo_preference_optimization:
   reason_never_run: "both DPO attempts died to Colab preemption before SimPO stage was reached"
 
 confidence_routed_ensemble:
-  # This session's new result -- an ACHIEVED, tested, statistically validated result
+  # Exploratory analysis: row matching and comparable confidence encoding require validation
   routing_signal: "PSC winner_consistency per instance (no gold-label leakage)"
-  tie_break: "gemma"           # specified before seeing outcome-level results
+  tie_break: "gemma"           # documented routing preference; independent validation is needed
   models: ["gemma_merge", "llama_merge", "dorna_merge"]
   result:
     hits1: 0.618
